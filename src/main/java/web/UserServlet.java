@@ -60,10 +60,10 @@ public class UserServlet extends HttpServlet {
 		
         String userId = splits[1];
         
-        if (UserDao.getUsers().containsKey(userId)) {
+        if (!UserDao.getUsers().containsKey(userId)) {
         	res.sendError(HttpServletResponse.SC_NOT_FOUND);
-			return;			
-		}
+        	return;			
+        }
         
         sendAsJson(res, UserDao.getUsers().get(userId));        
         
@@ -95,6 +95,44 @@ public class UserServlet extends HttpServlet {
 		}
 		
 	}
+	protected void doPut(HttpServletRequest req, HttpServletResponse res)
+			throws ServletException,IOException{
+		
+		String pathInfo = req.getPathInfo();
+		if (pathInfo == null || pathInfo == "/") {
+			res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+		
+		String[] splits = pathInfo.split("/");
+		
+        if(splits.length != 2) {			
+			res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+        
+        String userId = splits[1];
+        
+        if (!UserDao.getUsers().containsKey(userId)) {
+        	res.sendError(HttpServletResponse.SC_NOT_FOUND);
+        	return;			
+        }
+        
+        StringBuilder buffer = new StringBuilder();
+		BufferedReader reader = req.getReader();
+		String line;
+		
+		while((line = reader.readLine()) != null) {
+			buffer.append(line);				
+		}
+		
+		String payload = buffer.toString();
+		User user = gson.fromJson(payload, User.class);
+		UserDao.getUsers().put(user.getId(), user);
+		sendAsJson(res, user);     
+         
+	}
+	
 	
 	
 	
