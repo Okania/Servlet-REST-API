@@ -37,6 +37,7 @@ public class UserServlet extends HttpServlet {
 		pw.flush();			
 	}
 	
+	@SuppressWarnings("unlikely-arg-type")
 	protected void doGet(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException{
 		
@@ -95,6 +96,7 @@ public class UserServlet extends HttpServlet {
 		}
 		
 	}
+	@SuppressWarnings("unlikely-arg-type")
 	protected void doPut(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException,IOException{
 		
@@ -131,6 +133,37 @@ public class UserServlet extends HttpServlet {
 		UserDao.getUsers().put(user.getId(), user);
 		sendAsJson(res, user);     
          
+	}
+	@SuppressWarnings("unlikely-arg-type")
+	protected void doDelete(HttpServletRequest req, HttpServletResponse res) 
+			throws IOException, ServletException{
+		
+		String pathInfo = req.getPathInfo();
+		if (pathInfo == null || pathInfo == "/") {
+			res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+		
+		String[] splits = pathInfo.split("/");
+		
+        if(splits.length != 2) {			
+			res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+        
+        String userId = splits[1];
+        
+        if (!UserDao.getUsers().containsKey(userId)) {
+        	res.sendError(HttpServletResponse.SC_NOT_FOUND);
+        	return;			
+        }
+        
+        User user = UserDao.getUsers().get(userId);
+        UserDao.getUsers().remove(user);
+        
+        sendAsJson(res, user);
+        return;
+		
 	}
 	
 	
