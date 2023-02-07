@@ -96,6 +96,7 @@ public class UserServlet extends HttpServlet {
 		}
 		
 	}
+	
 	@SuppressWarnings("unlikely-arg-type")
 	protected void doPut(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException,IOException{
@@ -134,6 +135,7 @@ public class UserServlet extends HttpServlet {
 		sendAsJson(res, user);     
          
 	}
+	
 	@SuppressWarnings("unlikely-arg-type")
 	protected void doDelete(HttpServletRequest req, HttpServletResponse res) 
 			throws IOException, ServletException{
@@ -162,12 +164,7 @@ public class UserServlet extends HttpServlet {
         UserDao.getUsers().remove(user);
         
         sendAsJson(res, user);
-        return;
-		
-	}
-	
-	
-	
-	
+        return;		
+	}	
 
 }
